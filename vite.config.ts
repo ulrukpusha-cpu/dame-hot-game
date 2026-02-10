@@ -13,11 +13,8 @@ export default defineConfig({
     alias: { '@': path.resolve(__dirname, './src') },
   },
 
-  // Préfixe des assets en production (équivalent assetPrefix Next)
-  base:
-    process.env.NODE_ENV === 'production' && process.env.BASE_URL
-      ? process.env.BASE_URL
-      : '',
+  // Préfixe des assets (doit être '' ou un chemin comme '/'). Ne pas mettre une URL complète.
+  base: '',
 
   // Variables d'environnement exposées au client (préfixe VITE_)
   envPrefix: 'VITE_',
