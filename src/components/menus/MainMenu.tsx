@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { useTheme } from '@/hooks/useTheme'
 import { useUserStore } from '@/stores/userStore'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -19,12 +20,14 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   onSettings,
 }) => {
   const { theme, colors } = useTheme()
-  const user = useUserStore((s) => ({
-    username: s.username,
-    photoUrl: s.photoUrl,
-    balanceTon: s.balanceTon,
-    balanceStars: s.balanceStars,
-  }))
+  const user = useUserStore(
+    useShallow((s) => ({
+      username: s.username,
+      photoUrl: s.photoUrl,
+      balanceTon: s.balanceTon,
+      balanceStars: s.balanceStars,
+    }))
+  )
   const [showPlayOptions, setShowPlayOptions] = useState(false)
   const [particles, setParticles] = useState<
     Array<{ id: number; x: number; y: number }>
