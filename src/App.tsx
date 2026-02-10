@@ -20,7 +20,7 @@ import type { Screen } from '@/types'
 
 function App() {
   useTelegramWebApp()
-  const { theme, colors } = useTheme()
+  const { theme } = useTheme()
   useGameLogic()
 
   useEffect(() => {
