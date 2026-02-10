@@ -4,7 +4,6 @@ import { Board } from '@/components/game/Board'
 import { GameControls } from '@/components/game/GameControls'
 import { MoveHistory } from '@/components/game/MoveHistory'
 import { MainMenu } from '@/components/menus/MainMenu'
-import { ThemeSelector } from '@/components/menus/ThemeSelector'
 import { BettingPanel } from '@/components/menus/BettingPanel'
 import { ResultsScreen } from '@/components/menus/ResultsScreen'
 import { LeaderboardScreen } from '@/components/menus/LeaderboardScreen'
@@ -136,9 +135,6 @@ function App() {
             exit={{ opacity: 0 }}
             className="min-h-screen flex flex-col items-center justify-center p-4 py-8"
           >
-            <div className="mb-2">
-              <ThemeSelector />
-            </div>
             <Board />
             <MoveHistory />
             <GameControls onBack={goToMenu} />
@@ -153,9 +149,6 @@ function App() {
             exit={{ opacity: 0 }}
             className="min-h-screen flex flex-col items-center justify-center p-4 py-8"
           >
-            <div className="mb-2">
-              <ThemeSelector />
-            </div>
             <Board />
             <MoveHistory />
             <GameControls onBack={goToMenu} />

@@ -188,23 +188,24 @@ export function Board({
         )}
 
         {Array.from({ length: SIZE * SIZE }, (_, i) => {
-          const rowIndex = Math.floor(i / SIZE)
+          const displayRow = Math.floor(i / SIZE)
           const colIndex = i % SIZE
-          const position: Position = { row: rowIndex, col: colIndex }
-          const isLight = (rowIndex + colIndex) % 2 === 0
-          const cellPiece = board[rowIndex]?.[colIndex] ?? null
+          const boardRow = SIZE - 1 - displayRow
+          const position: Position = { row: boardRow, col: colIndex }
+          const isLight = (boardRow + colIndex) % 2 === 0
+          const cellPiece = board[boardRow]?.[colIndex] ?? null
           const pieceForRender =
             cellPiece &&
-            boardPieceToPiecePosition(cellPiece, rowIndex, colIndex)
+            boardPieceToPiecePosition(cellPiece, boardRow, colIndex)
           const isSelected =
-            selectedSquare?.row === rowIndex &&
+            selectedSquare?.row === boardRow &&
             selectedSquare?.col === colIndex
           const isValidMoveTargetCell = isValidMoveTarget(position)
           const isLastMove = checkIfLastMove(position)
 
           return (
             <Square
-              key={`${rowIndex}-${colIndex}`}
+              key={`${boardRow}-${colIndex}`}
               position={position}
               isLight={isLight}
               isSelected={isSelected}

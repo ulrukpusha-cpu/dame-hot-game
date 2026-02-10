@@ -74,7 +74,7 @@ export function getValidMoves(
     [1, -1],
     [1, 1],
   ]
-  const moveDirs = piece.color === 'light' ? [[-1, -1], [-1, 1]] : [[1, -1], [1, 1]]
+  const moveDirs = piece.color === 'light' ? [[1, -1], [1, 1]] : [[-1, -1], [-1, 1]]
   const used = moveDirs as [number, number][]
   const allDirs = isKing ? dirs : used
 
@@ -115,7 +115,7 @@ function getJumpMoves(
     [1, -1],
     [1, 1],
   ]
-  const moveDirs = piece.color === 'light' ? [[-1, -1], [-1, 1]] : [[1, -1], [1, 1]]
+  const moveDirs = piece.color === 'light' ? [[1, -1], [1, 1]] : [[-1, -1], [-1, 1]]
   const used = isKing ? dirs : (moveDirs as [number, number][])
 
   for (const [dr, dc] of used) {
@@ -169,7 +169,7 @@ export function hasMandatoryCapture(
 }
 
 export function getPromotionRow(color: PlayerColor, size: number): number {
-  return color === 'light' ? 0 : size - 1
+  return color === 'light' ? size - 1 : 0
 }
 
 export function checkPromotion(pos: Position, color: PlayerColor, size: number): boolean {
