@@ -135,9 +135,14 @@ export function useTelegramWebApp() {
 
     tg.ready()
     tg.expand()
-    tg.setHeaderColor('#1A1A1A')
-    tg.setBackgroundColor('#0D0800')
-    tg.enableClosingConfirmation()
+    // API optionnelles selon la version Telegram (6.0+ les ignore)
+    try {
+      if (typeof tg.setHeaderColor === 'function') tg.setHeaderColor('#1A1A1A')
+      if (typeof tg.setBackgroundColor === 'function') tg.setBackgroundColor('#0D0800')
+      if (typeof tg.enableClosingConfirmation === 'function') tg.enableClosingConfirmation()
+    } catch {
+      // ignoré si non supporté
+    }
 
     const user = tg.initDataUnsafe?.user
     if (user) {
@@ -150,9 +155,13 @@ export function useTelegramWebApp() {
       })
     }
 
-    tg.BackButton.onClick(() => {
-      window.history.back()
-    })
+    try {
+      if (tg.BackButton && typeof tg.BackButton.onClick === 'function') {
+        tg.BackButton.onClick(() => window.history.back())
+      }
+    } catch {
+      // BackButton non supporté en version 6.0
+    }
   }, [setProfile])
 
   return window.Telegram?.WebApp

@@ -15,6 +15,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useGameLogic } from '@/hooks/useGameLogic'
 import { useGameStore } from '@/stores/gameStore'
 import { useTelegramWebApp } from '@/lib/telegram'
+import { getTheme } from '@/styles/themes/themeConfig'
 import type { Screen } from '@/types'
 
 function App() {
@@ -23,14 +24,15 @@ function App() {
   useGameLogic()
 
   useEffect(() => {
-    Object.entries(colors).forEach(([key, value]) => {
+    const themeColors = getTheme(theme)
+    Object.entries(themeColors).forEach(([key, value]) => {
       document.documentElement.style.setProperty(
         `--color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`,
         value
       )
     })
     document.body.className = `theme-${theme}`
-  }, [theme, colors])
+  }, [theme])
 
   const [screen, setScreen] = useState<Screen>('menu')
   const [showBetting, setShowBetting] = useState(false)

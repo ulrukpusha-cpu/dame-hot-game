@@ -5,8 +5,8 @@
   --board-border: #B8860B;
   --board-shadow: 0 10px 40px rgba(255, 215, 0, 0.5);
 
-  --gold-texture: url('/textures/gold.jpg');
-  --luxury-pattern: url('/textures/luxury-pattern.svg');
+  --gold-texture: none;
+  --luxury-pattern: none;
 
   --glow-animation: gold-glow 2s ease-in-out infinite;
 }

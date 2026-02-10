@@ -124,7 +124,7 @@ export function FriendsScreen({ onBack }: FriendsScreenProps) {
                 <div className="flex items-center gap-4">
                   <div className="relative">
                     <img
-                      src={friend.photoUrl || '/images/default-avatar.png'}
+                      src={friend.photoUrl || '/vite.svg'}
                       alt={friend.username}
                       className="w-12 h-12 rounded-full object-cover"
                     />

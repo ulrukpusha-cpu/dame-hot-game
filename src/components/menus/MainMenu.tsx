@@ -103,7 +103,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             whileTap={{ scale: 0.95 }}
           >
             <img
-              src={user?.photoUrl || '/images/default-avatar.png'}
+              src={user?.photoUrl || '/vite.svg'}
               alt={user?.username || 'Joueur'}
               className="w-14 h-14 rounded-full border-4 object-cover"
               style={{ borderColor: colors.primary }}

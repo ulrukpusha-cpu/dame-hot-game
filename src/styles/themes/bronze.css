@@ -6,9 +6,9 @@
   --board-border: #5C4A33;
   --board-shadow: 0 10px 40px rgba(92, 74, 51, 0.5);
 
-  /* Textures */
-  --wood-texture: url('/textures/wood-bronze.jpg');
-  --metal-texture: url('/textures/bronze.jpg');
+  /* Textures (fichiers optionnels : remplacer par vos assets si besoin) */
+  --wood-texture: none;
+  --metal-texture: none;
 
   /* Animations */
   --glow-animation: bronze-glow 2s ease-in-out infinite;
@@ -21,7 +21,7 @@
 
 .theme-bronze .board {
   background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%);
-  background-image: var(--wood-texture);
+  background-image: var(--wood-texture, none);
   background-blend-mode: multiply;
   box-shadow:
     inset 0 0 50px rgba(0, 0, 0, 0.3),

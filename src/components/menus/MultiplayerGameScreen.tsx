@@ -105,7 +105,7 @@ export function MultiplayerGameScreen({ onBack }: MultiplayerGameScreenProps) {
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-3">
             <img
-              src={opponent?.photoUrl || '/images/default-avatar.png'}
+              src={opponent?.photoUrl || '/vite.svg'}
               alt={opponent?.username || 'Adversaire'}
               className="w-12 h-12 rounded-full object-cover"
             />

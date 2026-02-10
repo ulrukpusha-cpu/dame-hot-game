@@ -5,8 +5,8 @@
   --board-border: #616161;
   --board-shadow: 0 10px 40px rgba(97, 97, 97, 0.5);
 
-  --metal-texture: url('/textures/silver.jpg');
-  --ornament-pattern: url('/textures/ornaments.svg');
+  --metal-texture: none;
+  --ornament-pattern: none;
 
   --glow-animation: silver-glow 2s ease-in-out infinite;
 }
