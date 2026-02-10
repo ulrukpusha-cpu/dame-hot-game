@@ -135,13 +135,25 @@ export function useTelegramWebApp() {
 
     tg.ready()
     tg.expand()
-    // API optionnelles selon la version Telegram (6.0+ les ignore)
-    try {
-      if (typeof tg.setHeaderColor === 'function') tg.setHeaderColor('#1A1A1A')
-      if (typeof tg.setBackgroundColor === 'function') tg.setBackgroundColor('#0D0800')
-      if (typeof tg.enableClosingConfirmation === 'function') tg.enableClosingConfirmation()
-    } catch {
-      // ignoré si non supporté
+
+    // En 6.0+ ces APIs ne sont pas supportées (éviter les warnings)
+    const version = (tg.version || '').split('.')[0]
+    const isLegacy = version && parseInt(version, 10) < 6
+    if (isLegacy) {
+      try {
+        if (typeof tg.setHeaderColor === 'function') tg.setHeaderColor('#1A1A1A')
+        if (typeof tg.setBackgroundColor === 'function') tg.setBackgroundColor('#0D0800')
+        if (typeof tg.enableClosingConfirmation === 'function') tg.enableClosingConfirmation()
+      } catch {
+        // ignoré
+      }
+      try {
+        if (tg.BackButton && typeof tg.BackButton.onClick === 'function') {
+          tg.BackButton.onClick(() => window.history.back())
+        }
+      } catch {
+        // ignoré
+      }
     }
 
     const user = tg.initDataUnsafe?.user
@@ -153,14 +165,6 @@ export function useTelegramWebApp() {
         lastName: user.last_name,
         photoUrl: user.photo_url,
       })
-    }
-
-    try {
-      if (tg.BackButton && typeof tg.BackButton.onClick === 'function') {
-        tg.BackButton.onClick(() => window.history.back())
-      }
-    } catch {
-      // BackButton non supporté en version 6.0
     }
   }, [setProfile])
 
