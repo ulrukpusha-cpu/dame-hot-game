@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useRef, useEffect, useCallback } from 'react'
 import { useTheme } from '@/hooks/useTheme'
 import { Piece } from './Piece'
 import { Square } from './Square'

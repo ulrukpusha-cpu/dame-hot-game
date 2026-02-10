@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Board } from '@/components/game/Board'
 import { useMultiplayer } from '@/hooks/useMultiplayer'
@@ -34,9 +34,8 @@ export function MultiplayerGameScreen({ onBack }: MultiplayerGameScreenProps) {
   const [chatMessage, setChatMessage] = useState('')
   const [showMenu, setShowMenu] = useState(false)
 
-  const isMyTurn =
-    currentGame?.yourColor ===
-    (currentTurn === 'white' ? 'light' : 'dark')
+  const myColorAsTurn = currentGame?.yourColor === 'light' ? 'white' : 'black'
+  const isMyTurn = currentGame != null && currentTurn === myColorAsTurn
   const opponent = currentGame?.players.find((p) => p.id !== myId)
 
   const handleMove = (move: Move) => {
@@ -125,9 +124,7 @@ export function MultiplayerGameScreen({ onBack }: MultiplayerGameScreenProps) {
               className="px-4 py-2 rounded-lg font-mono text-lg"
               style={{
                 backgroundColor:
-                  currentTurn !== currentGame.yourColor
-                    ? colors.error
-                    : colors.surface,
+                  !isMyTurn ? colors.error : colors.surface,
                 color: colors.text,
               }}
             >
@@ -169,9 +166,7 @@ export function MultiplayerGameScreen({ onBack }: MultiplayerGameScreenProps) {
             className="text-center px-4 py-3 rounded-lg font-mono text-2xl font-bold"
             style={{
               backgroundColor:
-                currentTurn === currentGame.yourColor
-                  ? colors.error
-                  : colors.surface,
+                isMyTurn ? colors.error : colors.surface,
               color: colors.text,
             }}
           >

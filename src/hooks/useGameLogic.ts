@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react'
 import { useGameStore } from '@/stores/gameStore'
 import { isGameOver, board2DToFlat } from '@/utils/gameRules'
 import { DameAI } from '@/utils/ai'
-import { toAIBoard, isPromotion } from '@/utils/boardAdapter'
+import { toAIBoard } from '@/utils/boardAdapter'
 
 const BOARD_SIZE = 10
 
@@ -42,7 +42,6 @@ export function useGameLogic() {
       const move = ai.getBestMove(aiBoard)
       ai.clearCache()
       if (move) {
-        const promoted = isPromotion(move, 'white', BOARD_SIZE)
         makeMove({
           from: move.from,
           to: move.to,

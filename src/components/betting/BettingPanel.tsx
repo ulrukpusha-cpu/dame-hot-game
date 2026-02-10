@@ -3,19 +3,6 @@ import { tonService } from '@/services/ton'
 import { useBettingStore } from '@/stores/bettingStore'
 import { useUserStore } from '@/stores/userStore'
 
-declare global {
-  interface Window {
-    Telegram?: {
-      WebApp?: {
-        showAlert?: (message: string) => void
-        openInvoice?: (url: string, callback?: (status: string) => void) => void
-        HapticFeedback?: { notificationOccurred: (type: string) => void }
-        initDataUnsafe?: { user?: { id: number } }
-      }
-    }
-  }
-}
-
 interface BettingPanelProps {
   gameId: string
   opponent: string

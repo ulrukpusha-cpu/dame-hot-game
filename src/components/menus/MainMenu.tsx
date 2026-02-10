@@ -449,7 +449,7 @@ const ThemeButton: React.FC<ThemeButtonProps> = ({
       `}
       style={{
         backgroundColor: colors[themeType],
-        ringColor: currentTheme === themeType ? colors[themeType] : 'transparent',
+        ['--tw-ring-color' as string]: currentTheme === themeType ? colors[themeType] : 'transparent',
       }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}

@@ -177,7 +177,7 @@ export const telegramUtils = {
 
   confirm: (message: string): Promise<boolean> => {
     return new Promise((resolve) => {
-      window.Telegram?.WebApp?.showConfirm?.(message, (confirmed) =>
+      window.Telegram?.WebApp?.showConfirm?.(message, (confirmed: boolean) =>
         resolve(confirmed ?? false)
       )
     })
@@ -186,10 +186,14 @@ export const telegramUtils = {
   popup: (params: {
     title?: string
     message: string
-    buttons: Array<{ id: string; type?: string; text: string }>
+    buttons: Array<{
+      id: string
+      type?: 'default' | 'ok' | 'close' | 'cancel' | 'destructive'
+      text: string
+    }>
   }): Promise<string> => {
     return new Promise((resolve) => {
-      window.Telegram?.WebApp?.showPopup?.(params, (buttonId) =>
+      window.Telegram?.WebApp?.showPopup?.(params, (buttonId: string) =>
         resolve(buttonId ?? '')
       )
     })
@@ -242,7 +246,7 @@ export const telegramUtils = {
 
   scanQR: (text = 'Scannez le QR code'): Promise<string | null> => {
     return new Promise((resolve) => {
-      window.Telegram?.WebApp?.showScanQrPopup?.({ text }, (data) => {
+      window.Telegram?.WebApp?.showScanQrPopup?.({ text }, (data: string) => {
         resolve(data ?? null)
         return true
       })

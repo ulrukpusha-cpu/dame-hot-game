@@ -43,11 +43,6 @@ function App() {
     if (status === 'finished' && screen === 'game') setScreen('results')
   }, [status, screen])
 
-  const goToGame = (mode: 'vs-ai' | 'vs-friend') => {
-    startGame(mode)
-    setScreen('game')
-  }
-
   const goToMenu = () => {
     setScreen('menu')
     useGameStore.getState().resetGame()

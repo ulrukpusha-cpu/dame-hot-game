@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import type { Player, Move, CurrentGame, ChatMessage } from '@/types'
+import type { Player, Move, CurrentGame } from '@/types'
 import { useGameStore } from '@/stores/gameStore'
 
 /**
