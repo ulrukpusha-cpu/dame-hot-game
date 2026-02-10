@@ -21,7 +21,7 @@ export const GameHeader: React.FC<{
 
   return (
     <div className="p-4 space-y-3">
-      {/* Joueur 2 (en haut) */}
+      {/* Joueur 2 (adversaire, en haut) — score à droite */}
       <div
         className="p-4 rounded-xl flex items-center justify-between"
         style={{ backgroundColor: colors.surface }}
@@ -71,11 +71,19 @@ export const GameHeader: React.FC<{
         </div>
       </div>
 
-      {/* Joueur 1 (en bas) */}
+      {/* Joueur 1 (en bas) — score à gauche */}
       <div
         className="p-4 rounded-xl flex items-center justify-between"
         style={{ backgroundColor: colors.surface }}
       >
+        <div className="text-left">
+          <p className="text-3xl font-bold" style={{ color: colors.primary }}>
+            {getScore(player1.color)}
+          </p>
+          <p className="text-xs" style={{ color: colors.textSecondary }}>
+            points
+          </p>
+        </div>
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-2xl">
             {player1.color === 'white' ? '⚪' : '⚫'}
@@ -88,14 +96,6 @@ export const GameHeader: React.FC<{
               Pièces: {player1.color === 'white' ? whitePieces : blackPieces}
             </p>
           </div>
-        </div>
-        <div className="text-right">
-          <p className="text-3xl font-bold" style={{ color: colors.primary }}>
-            {getScore(player1.color)}
-          </p>
-          <p className="text-xs" style={{ color: colors.textSecondary }}>
-            points
-          </p>
         </div>
       </div>
     </div>

@@ -48,7 +48,7 @@ export const Square: React.FC<SquareProps> = ({
     }
 
     if (isSelected) {
-      baseClasses.push('ring-4', 'ring-yellow-400', 'ring-opacity-80', 'z-10')
+      baseClasses.push('ring-4', 'ring-yellow-400', 'ring-opacity-40', 'z-10')
     }
 
     if (isLastMove) {
@@ -100,7 +100,7 @@ export const Square: React.FC<SquareProps> = ({
       {/* Highlight du dernier coup */}
       {isLastMove && (
         <div
-          className="absolute inset-0 bg-yellow-300 bg-opacity-20 pointer-events-none animate-pulse"
+          className="absolute inset-0 bg-yellow-300 bg-opacity-10 pointer-events-none"
         />
       )}
 
