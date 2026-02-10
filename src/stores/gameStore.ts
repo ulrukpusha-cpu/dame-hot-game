@@ -1,14 +1,19 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
+import { board2DToFlat, getValidMoves, hasMandatoryCapture } from '@/utils/gameRules'
 import type { Position, Move, BoardPiece } from '@/types'
 
 const BOARD_SIZE = 10
+
+export type ValidMoveFull = { to: Position; captures?: Position[] }
 
 interface GameState {
   board: (BoardPiece | null)[][]
   currentTurn: 'white' | 'black'
   selectedSquare: Position | null
   validMoves: Position[]
+  /** Coups complets (avec prises) pour appliquer correctement makeMove */
+  validMovesFull: ValidMoveFull[]
   moveHistory: Move[]
   capturedPieces: { white: BoardPiece[]; black: BoardPiece[] }
   gameId: string | null
@@ -56,48 +61,19 @@ function initialBoard(): (BoardPiece | null)[][] {
   return board
 }
 
-function calculateValidMoves(
+function computeValidMovesFromRules(
   board: (BoardPiece | null)[][],
   from: Position,
-  piece: BoardPiece
-): Position[] {
-  const moves: Position[] = []
-  const directions: [number, number][] =
-    piece.type === 'pawn'
-      ? piece.player === 'white'
-        ? [
-            [1, -1],
-            [1, 1],
-          ]
-        : [
-            [-1, -1],
-            [-1, 1],
-          ]
-      : [
-          [1, 1],
-          [1, -1],
-          [-1, 1],
-          [-1, -1],
-        ]
-
-  for (const [dRow, dCol] of directions) {
-    const to: Position = {
-      row: from.row + dRow,
-      col: from.col + dCol,
-    }
-    if (
-      to.row >= 0 &&
-      to.row < BOARD_SIZE &&
-      to.col >= 0 &&
-      to.col < BOARD_SIZE
-    ) {
-      if (!board[to.row][to.col]) {
-        moves.push(to)
-      }
-    }
-  }
-
-  return moves
+  currentTurn: 'white' | 'black'
+): ValidMoveFull[] {
+  const flat = board2DToFlat(board)
+  const color = currentTurn === 'white' ? 'light' : 'dark'
+  const size = 10 as 8 | 10
+  const allMoves = getValidMoves(flat, from, size)
+  if (allMoves.length === 0) return []
+  const mustCapture = hasMandatoryCapture(flat, color, size)
+  const moves = mustCapture ? allMoves.filter((m) => m.captures?.length) : allMoves
+  return moves.length ? moves : allMoves
 }
 
 export const useGameStore = create<GameState>()(
@@ -108,6 +84,7 @@ export const useGameStore = create<GameState>()(
         currentTurn: 'white',
         selectedSquare: null,
         validMoves: [],
+        validMovesFull: [],
         moveHistory: [],
         capturedPieces: { white: [], black: [] },
         gameId: null,
@@ -121,29 +98,31 @@ export const useGameStore = create<GameState>()(
           set({
             board: initialBoard(),
             currentTurn: 'white',
-            selectedSquare: null,
-            validMoves: [],
-            moveHistory: [],
-            capturedPieces: { white: [], black: [] },
-            lastMove: null,
-          }),
+        selectedSquare: null,
+        validMoves: [],
+        validMovesFull: [],
+        moveHistory: [],
+        capturedPieces: { white: [], black: [] },
+        lastMove: null,
+      }),
 
         setBoard: (board) => set({ board }),
 
         selectSquare: (position) => {
           const { board, currentTurn } = get()
-          const piece = board[position.row][position.col]
+          const piece = board[position.row]?.[position.col]
 
           if (!piece || piece.player !== currentTurn) {
-            set({ selectedSquare: null, validMoves: [] })
+            set({ selectedSquare: null, validMoves: [], validMovesFull: [] })
             return
           }
 
-          const validMoves = calculateValidMoves(board, position, piece)
-          set({ selectedSquare: position, validMoves })
+          const validMovesFull = computeValidMovesFromRules(board, position, currentTurn)
+          const validMoves = validMovesFull.map((m) => m.to)
+          set({ selectedSquare: position, validMoves, validMovesFull })
         },
 
-        clearSelection: () => set({ selectedSquare: null, validMoves: [] }),
+        clearSelection: () => set({ selectedSquare: null, validMoves: [], validMovesFull: [] }),
 
         makeMove: (move) => {
           const {
@@ -151,19 +130,25 @@ export const useGameStore = create<GameState>()(
             currentTurn,
             moveHistory,
             capturedPieces,
+            validMovesFull,
           } = get()
 
+          const fullMove = validMovesFull?.find(
+            (m) => m.to.row === move.to.row && m.to.col === move.to.col
+          )
+          const captures = fullMove?.captures ?? move.captures
+
           const newBoard = board.map((row) => [...row])
-          const piece = newBoard[move.from.row][move.from.col]
+          const piece = newBoard[move.from.row]?.[move.from.col]
           if (!piece) return
 
           newBoard[move.to.row][move.to.col] = piece
           newBoard[move.from.row][move.from.col] = null
 
           const newCapturedPieces = { ...capturedPieces }
-          if (move.captures) {
-            for (const capturePos of move.captures) {
-              const capturedPiece = newBoard[capturePos.row][capturePos.col]
+          if (captures?.length) {
+            for (const capturePos of captures) {
+              const capturedPiece = newBoard[capturePos.row]?.[capturePos.col]
               if (capturedPiece) {
                 newCapturedPieces[capturedPiece.player].push(capturedPiece)
                 newBoard[capturePos.row][capturePos.col] = null
@@ -185,9 +170,10 @@ export const useGameStore = create<GameState>()(
             currentTurn: currentTurn === 'white' ? 'black' : 'white',
             selectedSquare: null,
             validMoves: [],
-            moveHistory: [...moveHistory, move],
+            validMovesFull: [],
+            moveHistory: [...moveHistory, { ...move, captures }],
             capturedPieces: newCapturedPieces,
-            lastMove: move,
+            lastMove: { ...move, captures },
           })
         },
 
@@ -205,6 +191,7 @@ export const useGameStore = create<GameState>()(
             currentTurn: 'white',
             selectedSquare: null,
             validMoves: [],
+            validMovesFull: [],
             moveHistory: [],
             capturedPieces: { white: [], black: [] },
             gameId: null,
@@ -231,6 +218,7 @@ export const useGameStore = create<GameState>()(
             currentTurn: 'white',
             selectedSquare: null,
             validMoves: [],
+            validMovesFull: [],
             moveHistory: [],
             capturedPieces: { white: [], black: [] },
             lastMove: null,

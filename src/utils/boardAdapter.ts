@@ -3,7 +3,7 @@ import type { PiecePosition, PlayerColor } from '@/types'
 
 /**
  * Convertit notre état (liste de pièces + tour) vers le format Board de l'IA.
- * light -> black, dark -> white (même sens de déplacement)
+ * light (blanc, en haut) -> white (IA move down), dark (noir, en bas) -> black (IA move up).
  */
 export function toAIBoard(
   pieces: PiecePosition[],
@@ -15,14 +15,14 @@ export function toAIBoard(
   )
 
   for (const p of pieces) {
-    const player: Player = p.color === 'light' ? 'black' : 'white'
+    const player: Player = p.color === 'light' ? 'white' : 'black'
     squares[p.position.row][p.position.col] = {
       type: p.type,
       player,
     }
   }
 
-  const currentPlayer: Player = currentTurn === 'light' ? 'black' : 'white'
+  const currentPlayer: Player = currentTurn === 'light' ? 'white' : 'black'
 
   return {
     squares,
