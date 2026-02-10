@@ -19,6 +19,11 @@ export default defineConfig({
   // Variables d'environnement exposées au client (préfixe VITE_)
   envPrefix: 'VITE_',
 
+  // Augmenter la limite pour éviter le warning "chunk > 500 kB" (bundle actuel ~800 kB)
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
+
   // Serveur de dev : en-têtes pour Telegram Mini App / iframe
   server: {
     headers: {
