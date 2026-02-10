@@ -15,6 +15,7 @@ export function useGameLogic() {
   const setWinner = useGameStore((s) => s.setWinner)
   const setStatus = useGameStore((s) => s.setStatus)
   const makeMove = useGameStore((s) => s.makeMove)
+  const setAIIsThinking = useGameStore((s) => s.setAIIsThinking)
 
   const currentTurnColor = currentTurn === 'white' ? 'light' : 'dark'
 
@@ -35,6 +36,7 @@ export function useGameLogic() {
     if (status !== 'playing' || gameMode !== 'ai') return
     if (currentTurn !== 'black') return
 
+    setAIIsThinking(true)
     const timer = setTimeout(() => {
       const flatBoard = board2DToFlat(board)
       const aiBoard = toAIBoard(flatBoard, currentTurnColor, BOARD_SIZE)
@@ -48,10 +50,14 @@ export function useGameLogic() {
           captures: move.captures,
         })
       }
+      setAIIsThinking(false)
     }, 400)
 
-    return () => clearTimeout(timer)
-  }, [board, currentTurn, status, gameMode, aiDifficulty, makeMove, currentTurnColor])
+    return () => {
+      clearTimeout(timer)
+      setAIIsThinking(false)
+    }
+  }, [board, currentTurn, status, gameMode, aiDifficulty, makeMove, currentTurnColor, setAIIsThinking])
 
   useEffect(() => {
     if (status !== 'playing') return

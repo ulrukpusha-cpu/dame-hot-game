@@ -7,6 +7,8 @@ interface SquareProps {
   isLight: boolean
   isSelected: boolean
   isValidMove: boolean
+  /** true si le coup valide est une capture (affichage cercle rouge) */
+  isValidCaptureMove?: boolean
   isLastMove: boolean
   onClick: () => void
   theme: ThemeType
@@ -18,6 +20,7 @@ export const Square: React.FC<SquareProps> = ({
   isLight,
   isSelected,
   isValidMove,
+  isValidCaptureMove = false,
   isLastMove,
   onClick,
   theme,
@@ -73,21 +76,24 @@ export const Square: React.FC<SquareProps> = ({
     >
       {children}
 
-      {/* Indicateur de coup valide */}
+      {/* Indicateur de coup valide : cercle rouge = capture, point vert = mouvement simple */}
       {isValidMove && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div
-            className={`
-              w-4 h-4 rounded-full
-              ${children ? 'border-4 border-red-500' : 'bg-green-500'}
-              animate-pulse
-            `}
-            style={{
-              boxShadow: children
-                ? '0 0 20px rgba(239, 68, 68, 0.8)'
-                : '0 0 15px rgba(34, 197, 94, 0.8)',
-            }}
-          />
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+          {isValidCaptureMove ? (
+            <div
+              className="w-16 h-16 rounded-full border-4 border-red-500 animate-pulse"
+              style={{
+                boxShadow: '0 0 20px rgba(239, 68, 68, 0.8)',
+              }}
+            />
+          ) : (
+            <div
+              className="w-6 h-6 rounded-full bg-green-500 animate-pulse"
+              style={{
+                boxShadow: '0 0 15px rgba(34, 197, 94, 0.8)',
+              }}
+            />
+          )}
         </div>
       )}
 

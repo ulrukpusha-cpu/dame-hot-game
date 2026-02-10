@@ -1,6 +1,9 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { board2DToFlat, getValidMoves, hasMandatoryCapture } from '@/utils/gameRules'
+import {
+  getAllPossibleMoves,
+  getPossibleMovesForPiece,
+} from '@/utils/gameRules'
 import type { Position, Move, BoardPiece } from '@/types'
 
 const BOARD_SIZE = 10
@@ -22,8 +25,10 @@ interface GameState {
   status: 'idle' | 'playing' | 'finished' | 'draw'
   winner: 'white' | 'black' | null
   lastMove: Move | null
+  isAIThinking: boolean
 
   initBoard: () => void
+  setAIIsThinking: (value: boolean) => void
   setBoard: (board: (BoardPiece | null)[][]) => void
   selectSquare: (position: Position) => void
   clearSelection: () => void
@@ -61,20 +66,6 @@ function initialBoard(): (BoardPiece | null)[][] {
   return board
 }
 
-function computeValidMovesFromRules(
-  board: (BoardPiece | null)[][],
-  from: Position,
-  currentTurn: 'white' | 'black'
-): ValidMoveFull[] {
-  const flat = board2DToFlat(board)
-  const color = currentTurn === 'white' ? 'light' : 'dark'
-  const size = 10 as 8 | 10
-  const allMoves = getValidMoves(flat, from, size)
-  if (allMoves.length === 0) return []
-  const mustCapture = hasMandatoryCapture(flat, color, size)
-  const moves = mustCapture ? allMoves.filter((m) => m.captures?.length) : allMoves
-  return moves.length ? moves : allMoves
-}
 
 export const useGameStore = create<GameState>()(
   devtools(
@@ -93,6 +84,9 @@ export const useGameStore = create<GameState>()(
         status: 'idle',
         winner: null,
         lastMove: null,
+        isAIThinking: false,
+
+        setAIIsThinking: (value) => set({ isAIThinking: value }),
 
         initBoard: () =>
           set({
@@ -117,7 +111,17 @@ export const useGameStore = create<GameState>()(
             return
           }
 
-          const validMovesFull = computeValidMovesFromRules(board, position, currentTurn)
+          const pieceMoves = getPossibleMovesForPiece(board, position, piece)
+          if (pieceMoves.length === 0) {
+            set({ selectedSquare: null, validMoves: [], validMovesFull: [] })
+            return
+          }
+          const allPlayerMoves = getAllPossibleMoves(board, currentTurn)
+          const mustCapture = allPlayerMoves.some((m) => m.captures?.length)
+          const moves = mustCapture
+            ? pieceMoves.filter((m) => m.captures?.length)
+            : pieceMoves
+          const validMovesFull = moves.map((m) => ({ to: m.to, captures: m.captures }))
           const validMoves = validMovesFull.map((m) => m.to)
           set({ selectedSquare: position, validMoves, validMovesFull })
         },
@@ -198,6 +202,7 @@ export const useGameStore = create<GameState>()(
             status: 'idle',
             winner: null,
             lastMove: null,
+            isAIThinking: false,
           }),
 
         setGameMode: (mode, difficulty) =>

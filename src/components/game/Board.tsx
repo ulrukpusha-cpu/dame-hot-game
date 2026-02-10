@@ -70,6 +70,7 @@ export function Board({
   const board = useGameStore((s) => s.board)
   const selectedSquare = useGameStore((s) => s.selectedSquare)
   const validMoves = useGameStore((s) => s.validMoves)
+  const validMovesFull = useGameStore((s) => s.validMovesFull)
   const currentTurn = useGameStore((s) => s.currentTurn)
   const clearSelection = useGameStore((s) => s.clearSelection)
   const selectSquare = useGameStore((s) => s.selectSquare)
@@ -98,6 +99,17 @@ export function Board({
         (v) => v.row === position.row && v.col === position.col
       ),
     [validMoves]
+  )
+
+  const isCaptureMoveTarget = useCallback(
+    (position: Position) =>
+      validMovesFull.some(
+        (m) =>
+          m.to.row === position.row &&
+          m.to.col === position.col &&
+          (m.captures?.length ?? 0) > 0
+      ),
+    [validMovesFull]
   )
 
   const handleSquareClick = useCallback(
@@ -201,6 +213,8 @@ export function Board({
             selectedSquare?.row === boardRow &&
             selectedSquare?.col === colIndex
           const isValidMoveTargetCell = isValidMoveTarget(position)
+          const isValidCaptureMoveCell =
+            isValidMoveTargetCell && isCaptureMoveTarget(position)
           const isLastMove = checkIfLastMove(position)
 
           return (
@@ -210,6 +224,7 @@ export function Board({
               isLight={isLight}
               isSelected={isSelected}
               isValidMove={isValidMoveTargetCell}
+              isValidCaptureMove={isValidCaptureMoveCell}
               isLastMove={isLastMove}
               onClick={() => handleSquareClick(position)}
               theme={theme}

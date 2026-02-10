@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Board } from '@/components/game/Board'
 import { GameControls } from '@/components/game/GameControls'
+import { GameHeader } from '@/components/game/GameHeader'
 import { MoveHistory } from '@/components/game/MoveHistory'
 import { MainMenu } from '@/components/menus/MainMenu'
 import { BettingPanel } from '@/components/menus/BettingPanel'
@@ -39,6 +40,10 @@ function App() {
   const status = useGameStore((s) => s.status)
   const startGame = useGameStore((s) => s.startGame)
   const gameMode = useGameStore((s) => s.gameMode)
+  const aiDifficulty = useGameStore((s) => s.aiDifficulty)
+  const currentTurn = useGameStore((s) => s.currentTurn)
+  const isAIThinking = useGameStore((s) => s.isAIThinking)
+  const { colors } = useTheme()
 
   useEffect(() => {
     if (status === 'finished' && screen === 'game') setScreen('results')
@@ -133,9 +138,36 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="min-h-screen flex flex-col items-center justify-center p-4 py-8"
+            className="min-h-screen flex flex-col items-center p-4 py-6"
+            style={{ background: colors.background }}
           >
-            <Board />
+            <GameHeader
+              player1={{ name: 'Vous', color: 'white' }}
+              player2={{
+                name: `IA Niveau ${aiDifficulty ?? 3}`,
+                color: 'black',
+              }}
+            />
+            {isAIThinking && (
+              <div className="text-center py-2">
+                <div
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg"
+                  style={{ backgroundColor: colors.surface }}
+                >
+                  <div
+                    className="animate-spin w-4 h-4 border-2 border-t-transparent rounded-full"
+                    style={{ borderColor: colors.primary }}
+                  />
+                  <span style={{ color: colors.text }}>
+                    L&apos;IA réfléchit...
+                  </span>
+                </div>
+              </div>
+            )}
+            <Board
+              disabled={currentTurn !== 'white' || isAIThinking}
+              showCoordinates
+            />
             <MoveHistory />
             <GameControls onBack={goToMenu} />
           </motion.div>
