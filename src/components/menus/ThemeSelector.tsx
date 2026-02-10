@@ -5,22 +5,10 @@ import type { ThemeType } from '@/styles/themes/themeConfig'
 export const ThemeSelector: React.FC = () => {
   const { theme, setTheme } = useTheme()
 
-  const themes: { type: ThemeType; name: string; preview: string }[] = [
-    {
-      type: 'bronze',
-      name: 'Bronze Classique',
-      preview: '/images/theme-bronze.jpg',
-    },
-    {
-      type: 'silver',
-      name: 'Silver Moderne',
-      preview: '/images/theme-silver.jpg',
-    },
-    {
-      type: 'gold',
-      name: 'Gold Premium',
-      preview: '/images/theme-gold.jpg',
-    },
+  const themes: { type: ThemeType; name: string; color: string }[] = [
+    { type: 'bronze', name: 'Bronze Classique', color: '#8B6914' },
+    { type: 'silver', name: 'Silver Moderne', color: '#9E9E9E' },
+    { type: 'gold', name: 'Gold Premium', color: '#FFD700' },
   ]
 
   return (
@@ -30,7 +18,7 @@ export const ThemeSelector: React.FC = () => {
       </h3>
 
       <div className="grid grid-cols-3 gap-4">
-        {themes.map(({ type, name, preview }) => (
+        {themes.map(({ type, name, color }) => (
           <button
             key={type}
             type="button"
@@ -43,13 +31,8 @@ export const ThemeSelector: React.FC = () => {
               }
             `}
           >
-            {/* Image de prévisualisation */}
-            <div className="aspect-square relative">
-              <img
-                src={preview}
-                alt={name}
-                className="w-full h-full object-cover"
-              />
+            {/* Aperçu couleur du thème */}
+            <div className="aspect-square relative" style={{ backgroundColor: color }}>
 
               {/* Overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />

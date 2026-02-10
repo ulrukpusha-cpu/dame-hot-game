@@ -7,6 +7,8 @@ interface AISelectScreenProps {
 }
 
 function vibrate(style: 'light' | 'medium' | 'heavy') {
+  const v = window.Telegram?.WebApp?.version
+  if (v && parseInt(String(v).split('.')[0], 10) >= 6) return
   if (window.Telegram?.WebApp?.HapticFeedback?.impactOccurred) {
     window.Telegram.WebApp.HapticFeedback.impactOccurred(style)
   }

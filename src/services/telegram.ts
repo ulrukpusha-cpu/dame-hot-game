@@ -11,6 +11,15 @@ export function isInTelegram() {
   return !!getTelegramWebApp()
 }
 
+/** HapticFeedback non supporté en WebApp 6.0+ — ne rien appeler pour éviter les warnings */
+function isHapticSupported(): boolean {
+  const tg = getTelegramWebApp()
+  if (!tg?.version) return true
+  const major = parseInt(String(tg.version).split('.')[0], 10)
+  return major < 6
+}
+
 export function hapticFeedback(style: 'light' | 'medium' | 'heavy' = 'light') {
+  if (!isHapticSupported()) return
   getTelegramWebApp()?.HapticFeedback?.impactOccurred(style)
 }

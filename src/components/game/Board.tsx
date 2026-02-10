@@ -38,13 +38,24 @@ function checkIfLastMove(position: Position): boolean {
   )
 }
 
+// Mettre à true après avoir ajouté public/sounds/move.mp3 pour éviter 404
+const SOUNDS_ENABLED = false
+
 function playSound(sound: string) {
-  const audio = new Audio(`/sounds/${sound}.mp3`)
-  audio.volume = 0.3
-  audio.play().catch(() => {})
+  if (!SOUNDS_ENABLED) return
+  try {
+    const audio = new Audio(`/sounds/${sound}.mp3`)
+    audio.volume = 0.3
+    audio.onerror = () => {}
+    audio.play().catch(() => {})
+  } catch {
+    // ignoré
+  }
 }
 
 function vibrate(style: 'light' | 'medium' | 'heavy') {
+  const v = window.Telegram?.WebApp?.version
+  if (v && parseInt(String(v).split('.')[0], 10) >= 6) return
   if (window.Telegram?.WebApp?.HapticFeedback?.impactOccurred) {
     window.Telegram.WebApp.HapticFeedback.impactOccurred(style)
   }

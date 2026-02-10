@@ -22,8 +22,12 @@ function applyThemeToDocument(theme: ThemeType, haptic = false): void {
     const cssVar = `--color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`
     document.documentElement.style.setProperty(cssVar, value)
   })
-  if (haptic && window.Telegram?.WebApp?.HapticFeedback?.impactOccurred) {
-    window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')
+  if (haptic) {
+    const v = window.Telegram?.WebApp?.version
+    if (v && parseInt(String(v).split('.')[0], 10) >= 6) return
+    if (window.Telegram?.WebApp?.HapticFeedback?.impactOccurred) {
+      window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')
+    }
   }
 }
 

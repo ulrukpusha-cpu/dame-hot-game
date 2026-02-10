@@ -61,8 +61,9 @@ export function BettingPanel({ gameId, opponent, onBetPlaced }: BettingPanelProp
               `Pari de ${betAmount} TON placé avec succès !`
             )
           }
-          if (window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred) {
-            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success')
+          const v = window.Telegram?.WebApp?.version
+          if (!v || parseInt(String(v).split('.')[0], 10) < 6) {
+            window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success')
           }
         } else {
           throw new Error('Transaction échouée')
@@ -73,8 +74,9 @@ export function BettingPanel({ gameId, opponent, onBetPlaced }: BettingPanelProp
     } catch (error) {
       console.error('Erreur pari:', error)
       alert('Erreur lors du placement du pari')
-      if (window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred) {
-        window.Telegram.WebApp.HapticFeedback.notificationOccurred('error')
+      const v = window.Telegram?.WebApp?.version
+      if (!v || parseInt(String(v).split('.')[0], 10) < 6) {
+        window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('error')
       }
     } finally {
       setLoading(false)

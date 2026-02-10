@@ -171,14 +171,20 @@ export function useTelegramWebApp() {
   return window.Telegram?.WebApp
 }
 
+const isHapticSupported = (): boolean => {
+  const v = window.Telegram?.WebApp?.version
+  if (!v) return true
+  return parseInt(String(v).split('.')[0], 10) < 6
+}
+
 export const telegramUtils = {
-  vibrate: (
-    style: 'light' | 'medium' | 'heavy' = 'medium'
-  ) => {
+  vibrate: (style: 'light' | 'medium' | 'heavy' = 'medium') => {
+    if (!isHapticSupported()) return
     window.Telegram?.WebApp?.HapticFeedback?.impactOccurred(style)
   },
 
   notify: (type: 'error' | 'success' | 'warning') => {
+    if (!isHapticSupported()) return
     window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred(type)
   },
 
