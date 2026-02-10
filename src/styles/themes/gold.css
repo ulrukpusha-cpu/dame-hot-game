@@ -1,0 +1,133 @@
+/* styles/themes/gold.css */
+.theme-gold {
+  --board-light: #FFD700;
+  --board-dark: #DAA520;
+  --board-border: #B8860B;
+  --board-shadow: 0 10px 40px rgba(255, 215, 0, 0.5);
+
+  --gold-texture: url('/textures/gold.jpg');
+  --luxury-pattern: url('/textures/luxury-pattern.svg');
+
+  --glow-animation: gold-glow 2s ease-in-out infinite;
+}
+
+@keyframes gold-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 30px rgba(255, 215, 0, 0.5),
+      0 0 60px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 50px rgba(255, 215, 0, 0.8),
+      0 0 100px rgba(255, 215, 0, 0.5);
+  }
+}
+
+.theme-gold .board {
+  background: linear-gradient(135deg, #1A0F00 0%, #2D1F0F 100%);
+  background-image: var(--luxury-pattern);
+  background-size: 150px 150px;
+  box-shadow:
+    inset 0 0 50px rgba(0, 0, 0, 0.5),
+    0 20px 60px rgba(0, 0, 0, 0.8),
+    0 0 100px rgba(255, 215, 0, 0.2);
+  border: 4px solid #B8860B;
+}
+
+.theme-gold .board-corner {
+  background: linear-gradient(145deg, #FFD700, #B8860B);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.5),
+    inset 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.theme-gold .square-light {
+  background: #FFD700;
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%);
+  background-size: 20px 20px;
+  box-shadow:
+    inset 0 0 20px rgba(255, 215, 0, 0.3),
+    0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.theme-gold .square-dark {
+  background: #DAA520;
+  background-image:
+    radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.3), transparent 50%);
+  box-shadow:
+    inset 0 0 20px rgba(184, 134, 11, 0.5),
+    0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.theme-gold .piece-white {
+  background: linear-gradient(145deg, #FFF9E6 0%, #FFD700 50%, #DAA520 100%);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.8),
+    inset 0 2px 5px rgba(255, 255, 255, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.5);
+  border: 3px solid #FFD700;
+}
+
+.theme-gold .piece-white::before {
+  /* Pierre précieuse verte */
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, #00FF88, #00AA55);
+  border-radius: 50%;
+  box-shadow:
+    0 0 10px rgba(0, 255, 136, 0.8),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.3);
+}
+
+.theme-gold .piece-black {
+  background: linear-gradient(145deg, #B8860B 0%, #9B7410 50%, #7A5C0F 100%);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.9),
+    inset 0 2px 3px rgba(184, 134, 11, 0.4);
+  border: 3px solid #7A5C0F;
+}
+
+.theme-gold .piece-king::after {
+  content: '♛';
+  color: #00FF88;
+  font-size: 24px;
+  text-shadow:
+    0 0 15px rgba(0, 255, 136, 1),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+  filter: drop-shadow(0 0 5px rgba(0, 255, 136, 0.8));
+}
+
+/* Effet de particules pour le thème gold */
+.theme-gold .particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, #FFD700, transparent);
+  border-radius: 50%;
+  animation: float-particle 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float-particle {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-100px) translateX(20px);
+  }
+}

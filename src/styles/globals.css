@@ -1,0 +1,69 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Segoe UI', system-ui, sans-serif;
+}
+
+:root {
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #0f0f0f;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Couronne des dames (roi) - taille par défaut, les thèmes surchargent couleur/effets */
+.piece-king::after {
+  display: block;
+  font-size: 0.55em;
+}
+
+/* Thème appliqué via data-theme sur un ancêtre */
+[data-theme='bronze'] {
+  --board-light: #c4a574;
+  --board-dark: #8b6914;
+  --piece-light: #cd7f32;
+  --piece-dark: #5c4033;
+  --accent: #b8860b;
+  --accent-hover: #daa520;
+  --ui-bg: #2a1810;
+  --ui-border: #8b6914;
+}
+
+[data-theme='silver'] {
+  --board-light: #c0c0c0;
+  --board-dark: #708090;
+  --piece-light: #e8e8e8;
+  --piece-dark: #4a4a4a;
+  --accent: #a8a8a8;
+  --accent-hover: #d0d0d0;
+  --ui-bg: #2a2a2e;
+  --ui-border: #708090;
+}
+
+[data-theme='gold'] {
+  --board-light: #daa520;
+  --board-dark: #8b6914;
+  --piece-light: #ffd700;
+  --piece-dark: #b8860b;
+  --accent: #ffd700;
+  --accent-hover: #ffec8b;
+  --ui-bg: #1a1510;
+  --ui-border: #b8860b;
+}

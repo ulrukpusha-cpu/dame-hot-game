@@ -1,0 +1,148 @@
+;; contract/betting.fc
+;; Contrat de paris TON pour Dame Hot Game
+
+#include "stdlib.fc";
+
+;; Storage: bet_id, total_pool, bets_dict
+;; bet value: player_address (slice), amount (coins), status (2 bits), game_id (ref)
+
+global int ctx_bet_id;
+global int ctx_total_pool;
+global cell ctx_bets_dict;
+
+() load_data() impure {
+    slice ds = get_data().begin_parse();
+    ctx_bet_id = ds~load_uint(32);
+    ctx_total_pool = ds~load_coins();
+    ctx_bets_dict = ds~load_dict();
+    ds.end_parse();
+}
+
+() save_data() impure {
+    set_data(
+        begin_cell()
+            .store_uint(ctx_bet_id, 32)
+            .store_coins(ctx_total_pool)
+            .store_dict(ctx_bets_dict)
+        .end_cell()
+    );
+}
+
+() recv_internal(int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    if (in_msg_body.slice_empty?()) {
+        return ();
+    }
+
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+
+    if (flags & 1) {
+        return ();
+    }
+
+    slice sender_address = cs~load_msg_addr();
+
+    load_data();
+
+    int op = in_msg_body~load_uint(32);
+
+    if (op == 1) {
+        ;; Place bet: op=1, then ref(cell) containing game_id slice
+        cell game_id_ref = in_msg_body~load_ref();
+        slice game_id = game_id_ref.begin_parse();
+
+        ;; Bet cell: sender, amount, status (0=pending), game_id ref
+        cell bet = begin_cell()
+            .store_slice(sender_address)
+            .store_coins(msg_value)
+            .store_uint(0, 2)
+            .store_ref(begin_cell().store_slice(game_id).end_cell())
+        .end_cell();
+
+        ctx_bets_dict~udict_set(256, ctx_bet_id, bet.begin_parse());
+        ctx_bet_id += 1;
+        ctx_total_pool += msg_value;
+
+        save_data();
+        return ();
+    }
+
+    if (op == 2) {
+        ;; Resolve bet: op=2, bet_id (32), result (1 bit: 1=won, 0=lost)
+        ;; TODO: ajouter vérification admin (sender == admin_address)
+        int bet_id = in_msg_body~load_uint(32);
+        int result = in_msg_body~load_uint(1);
+
+        (slice bet_data, int found) = ctx_bets_dict~udict_get?(256, bet_id);
+        throw_unless(404, found);
+
+        slice player_addr = bet_data~load_msg_addr();
+        int amount = bet_data~load_coins();
+        int status = bet_data~load_uint(2);
+
+        throw_if(409, status != 0);
+
+        if (result == 1) {
+            ;; Player won: send 1.9x (10% commission)
+            int winnings = amount * 19 / 10;
+
+            send_raw_message(begin_cell()
+                .store_uint(0x18, 6)
+                .store_slice(player_addr)
+                .store_coins(winnings)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+            .end_cell(), 1);
+
+            cell game_id_ref = bet_data~load_ref();
+            cell updated_bet = begin_cell()
+                .store_slice(player_addr)
+                .store_coins(amount)
+                .store_uint(1, 2)
+                .store_ref(game_id_ref)
+            .end_cell();
+
+            ctx_bets_dict~udict_set(256, bet_id, updated_bet.begin_parse());
+            ctx_total_pool -= winnings;
+        } else {
+            cell game_id_ref = bet_data~load_ref();
+            cell updated_bet = begin_cell()
+                .store_slice(player_addr)
+                .store_coins(amount)
+                .store_uint(2, 2)
+                .store_ref(game_id_ref)
+            .end_cell();
+
+            ctx_bets_dict~udict_set(256, bet_id, updated_bet.begin_parse());
+        }
+
+        save_data();
+        return ();
+    }
+
+    throw(0xffff);
+}
+
+;; Get methods
+int get_bet_id() method_id {
+    load_data();
+    return ctx_bet_id;
+}
+
+int get_total_pool() method_id {
+    load_data();
+    return ctx_total_pool;
+}
+
+(slice, int, int) get_bet(int bet_id) method_id {
+    load_data();
+    (slice bet_data, int found) = ctx_bets_dict~udict_get?(256, bet_id);
+
+    if (found) {
+        slice player = bet_data~load_msg_addr();
+        int amount = bet_data~load_coins();
+        int status = bet_data~load_uint(2);
+        return (player, amount, status);
+    }
+
+    return (begin_cell().end_cell().begin_parse(), 0, -1);
+}

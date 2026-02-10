@@ -1,0 +1,71 @@
+/* styles/themes/silver.css */
+.theme-silver {
+  --board-light: #E0E0E0;
+  --board-dark: #9E9E9E;
+  --board-border: #616161;
+  --board-shadow: 0 10px 40px rgba(97, 97, 97, 0.5);
+
+  --metal-texture: url('/textures/silver.jpg');
+  --ornament-pattern: url('/textures/ornaments.svg');
+
+  --glow-animation: silver-glow 2s ease-in-out infinite;
+}
+
+@keyframes silver-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 188, 212, 0.4); }
+  50% { box-shadow: 0 0 40px rgba(0, 188, 212, 0.7); }
+}
+
+.theme-silver .board {
+  background: linear-gradient(135deg, #263238 0%, #37474F 100%);
+  background-image: var(--ornament-pattern);
+  background-size: 100px 100px;
+  box-shadow:
+    inset 0 0 50px rgba(0, 0, 0, 0.4),
+    0 20px 60px rgba(0, 0, 0, 0.7);
+  border: 3px solid #546E7A;
+}
+
+.theme-silver .board-border {
+  background: linear-gradient(145deg, #78909C, #546E7A);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+  border: 1px solid #37474F;
+}
+
+.theme-silver .square-light {
+  background: #E0E0E0;
+  background-image:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.2), transparent 70%);
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.theme-silver .square-dark {
+  background: #9E9E9E;
+  background-image:
+    radial-gradient(circle at center, rgba(0, 0, 0, 0.2), transparent 70%);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.theme-silver .piece-white {
+  background: linear-gradient(145deg, #FFFFFF 0%, #E0E0E0 50%, #BDBDBD 100%);
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.7),
+    inset 0 2px 5px rgba(255, 255, 255, 0.5),
+    0 0 20px rgba(0, 188, 212, 0.3);
+  border: 2px solid #00BCD4;
+}
+
+.theme-silver .piece-black {
+  background: linear-gradient(145deg, #757575 0%, #616161 50%, #424242 100%);
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.9),
+    inset 0 2px 3px rgba(117, 117, 117, 0.4);
+  border: 2px solid #263238;
+}
+
+.theme-silver .piece-king::after {
+  content: '♛';
+  color: #00BCD4;
+  text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
